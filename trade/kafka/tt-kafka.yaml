@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-krw-xrp
+  namespace: ttrade
+spec:
+  selector:
+    matchLabels:
+      app: kafka-krw-xrp
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: kafka-krw-xrp
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: kafka-krw-xrp
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: kafka-bit
+        image: dogring/tt-kafka:1.6
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
+        env:
+        - name: TOPIC
+          value: krw-xrp
+        - name: TICK
+          value: KRW-XRP
+        - name: INTERVAL
+          value: '10'
+        - name: ZK_SERVICE
+          value: zk-cs.zookeeper.svc:2181
+        - name: KAFKA_SERVICE
+          value: my-cluster-kafka-bootstrap.kafka.svc:9092
+      restartPolicy: Always

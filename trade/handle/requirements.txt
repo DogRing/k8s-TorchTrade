@@ -1,0 +1,6 @@
+numpy
+requests
+kafka-python
+pyupbit
+scikit-learn
+joblib

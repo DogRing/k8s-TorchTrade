@@ -1,0 +1,9 @@
+kubectl cp -n test TorchTrade/docker/train/model_train/. gpu-pod1:/workspace/
+
+kubectl exec -it -n test gpu-pod1 -- pip install pandas
+kubectl exec -it -n test gpu-pod1 -- python app.py
+
+sudo nvidia-smi -i 0 -pm 1  # Power Management 활성화
+sudo nvidia-smi -i 0 -pl 150  # 전력 제한 설정
+
+ssh -t gpu 'TERM=xterm watch nvidia-smi'
