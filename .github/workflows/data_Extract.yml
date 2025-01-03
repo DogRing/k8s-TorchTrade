@@ -20,7 +20,7 @@ jobs:
       - run: echo "The name of branch is ${{ github.ref }} and repository is ${{ github.repository }}"
 
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - run: ls ${{ github.workspace }}
       - run: echo "Job's status ${{job.status}}"
