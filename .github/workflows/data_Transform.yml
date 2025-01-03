@@ -52,8 +52,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Pull Docker image
+        run: docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
       - name: Verify image
         run: docker images
 
       - name: Inspect image
         run: docker inspect ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      - name: Print job status
+        run: echo "Job's status ${{ job.status }}"
