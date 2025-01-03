@@ -17,6 +17,7 @@ on:
 env:
   IMAGE_NAME: dogring/tt-transform
   IMAGE_TAG: 0.1
+  WORKSPACE: train/data_Transform
 
 jobs:
   check:
@@ -37,15 +38,15 @@ jobs:
       
       - name: Run Pylint
         run: |
-          pylint train/data_Transform/*.py || true
+          pylint ${{ env.WORKSPACE }}/*.py || true
       
       - name: Run Bandit
         run: |
-          bandit -r . || true
+          bandit -r ${{ env.WORKSPACE }}/. || true
       
       - name: Run Flake8
         run: |
-          flake8 . || true
+          flake8 ${{ env.WORKSPACE }}/. || true
 
   build:
     needs: check
@@ -73,7 +74,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: train/data_Transform
+          context: ${{ env.WORKSPACE }}
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
