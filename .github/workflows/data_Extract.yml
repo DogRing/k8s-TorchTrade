@@ -2,6 +2,10 @@ name:
 on:
   push:
     branches: [ master ]
+    paths:
+      - "train/data_Transform/**"
+      - "!train/data_Transform/**.yaml"
+      - "!train/data_Transform/**.yml" 
   pull_request:
     branches: [ master ]
     paths:
