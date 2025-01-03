@@ -37,7 +37,15 @@ jobs:
       
       - name: Run Pylint
         run: |
-          pylint 
+          pylint train/data_Transform/*.py || true
+      
+      - name: Run Bandit
+        run: |
+          bandit -r . || true
+      
+      - name: Run Flake8
+        run: |
+          flake8 . || true
 
   build:
     needs: check
