@@ -3,9 +3,9 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "train/data_Transform/**"
-      - "!train/data_Transform/**.yaml"
-      - "!train/data_Transform/**.yml" 
+      - "train/data_Extract/**"
+      - "!train/data_Extract/**.yaml"
+      - "!train/data_Extract/**.yml" 
   pull_request:
     branches: [ main ]
     paths:
