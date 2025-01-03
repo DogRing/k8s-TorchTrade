@@ -14,8 +14,8 @@ on:
       - "!train/data_Transform/**.yml" 
 
 env:
-  IMAGE_NAME: ${{ env.IMAGE_NAME }}
-${{ env.IMAGE_TAG }} 0.1
+  IMAGE_NAME: dogring/tt-transform
+  IMAGE_TAG: 0.1
 
 jobs:
   build:
