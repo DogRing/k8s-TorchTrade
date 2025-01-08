@@ -15,7 +15,7 @@ for tick in tickers:
     if os.path.exists(folder_path)==False:
         print(f'No folder {folder_path}')
         os.mkdir(folder_path)
-    end_time=get_last_time(folder_path)
+    end_time=get_last_time(folder_path)+timedelta(minutes=1)
     print(f'\tSet End Time to {end_time}')
     print(f'Start collect data {tick}')
     contents=pd.DataFrame()
@@ -29,4 +29,4 @@ for tick in tickers:
         time.sleep(0.65)
         response=request_data(tick,'&to='+to_time)
     append_data(folder_path,contents.sort_index())
-    print(f"update {tick} from {contents.index[0]} to {contents.index[-1]}")
+    print(f"update {tick} from {contents.index[0]} to {contents.index[-1]}\n")
