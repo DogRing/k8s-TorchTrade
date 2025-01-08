@@ -15,7 +15,7 @@ spec:
             effect: "NoSchedule"
           containers:
           - name: update-csv
-            image: dogring/tt-extract:1.1
+            image: dogring/tt-extract:0.2
             imagePullPolicy: IfNotPresent
             resources:
               requests:
@@ -28,6 +28,10 @@ spec:
               - name: smb
                 mountPath: "/source/local_values.py"
                 subPath: "ttrade/local_values.py"
+                readOnly: true
+              - name: smb
+                mountPath: "/source/data_loader.py"
+                subPath: "ttrade/lib/data_loader.py"
                 readOnly: true
               - name: azsmb
                 mountPath: "/data/raw"
