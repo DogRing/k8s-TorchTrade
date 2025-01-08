@@ -1,11 +1,12 @@
 from local_values import tickers,raw_folder,data_folder
+from data_loader import load_data
 from data_transform import data_transform,data_scale
 import pandas as pd
 import json
 import os
 
 indicator_config_file=os.environ.get('INDICATOR_CONFIG',f'{data_folder}indicator.json')
-data_length = int(os.environ.get('DATA_LEN','0'))
+data_length = int(os.environ.get('DATA_LEN','2000000'))
 
 print(f'INDICATOR_CONFIG: {indicator_config_file}')
 print(f'DATA_LENGTH: {data_length}')
@@ -15,12 +16,9 @@ with open(indicator_config_file,'r') as f:
 
 print("")
 for tick in tickers:
-    raw_file = raw_folder+tick+'.csv'
-    print(f'READ CSV file "{tick}" on "{raw_file}"')
-    df=pd.read_csv(raw_file,parse_dates=[0],index_col=[0])
-    if data_length:
-        print(f'\tData {len(df)}')
-        df=df[-data_length:]
+    folder_path=raw_folder+tick+'/'
+    print(f'Data Load from {folder_path} with {data_length}')
+    df=load_data(folder_path,data_length)
     print("\tresample, fillna")
     df=df.resample(rule='min').first()
     df[['volume','value']]=df[['volume','value']].fillna(0)

@@ -6,7 +6,6 @@ on:
       - "train/data_Transform/**"
       - "!train/data_Transform/**.yaml"
       - "!train/data_Transform/**.yml" 
-      - ".github/workflows/data_Transform.yml"
   pull_request:
     branches: [ main ]
     paths:
@@ -16,7 +15,7 @@ on:
 
 env:
   IMAGE_NAME: dogring/tt-transform
-  IMAGE_TAG: 0.1
+  IMAGE_TAG: 0.2
   WORKSPACE: train/data_Transform
 
 jobs:

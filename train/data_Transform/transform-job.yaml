@@ -37,6 +37,10 @@ spec:
                 mountPath: "/source/data_transform.py"
                 subPath: "ttrade/lib/data_transform.py"
                 readOnly: true
+              - name: smb
+                mountPath: "/source/data_loader.py"
+                subPath: "ttrade/lib/data_loader.py"
+                readOnly: true
               - name: azsmb
                 mountPath: "/data/raw"
                 subPath: "ttrade/raw"
