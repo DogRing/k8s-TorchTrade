@@ -4,7 +4,7 @@ metadata:
   name: transform-data
   namespace: ttrade
 spec:
-  schedule: "0 1 * * 0"
+  schedule: "* * 31 2 *"
   jobTemplate:
     spec:
       template:
@@ -12,7 +12,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: data-smb
-            image: dogring/tt-transform:1.0
+            image: dogring/tt-transform:0.2
             imagePullPolicy: IfNotPresent
             resources:
               requests:
@@ -47,7 +47,7 @@ spec:
                 readOnly: true
               - name: smb
                 mountPath: "/data/data"
-                subPath: "ttrade/data/241212"
+                subPath: "ttrade/data/241227"
           volumes:
             - name: smb
               persistentVolumeClaim:
