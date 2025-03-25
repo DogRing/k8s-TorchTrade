@@ -6,6 +6,7 @@ import json
 import os
 
 indicator_config_file=os.environ.get('INDICATOR_CONFIG',f'{data_folder}indicator.json')
+scale_config_file=os.environ.get('SCALER_CONFIG',f'{data_folder}scale.json')
 data_length = int(os.environ.get('DATA_LEN','2000000'))
 
 print(f'INDICATOR_CONFIG: {indicator_config_file}')
@@ -13,6 +14,15 @@ print(f'DATA_LENGTH: {data_length}')
 
 with open(indicator_config_file,'r') as f:
     tf_config=json.load(f)
+if os.path.exists(scale_config_file):
+    try:
+        with open(scale_config_file,'r') as f:
+            scale_config=json.load(f)
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from {scale_config_file}")
+else:
+    scale_config=None
+    print(f"Config file {scale_config_file} not found")
 
 print("")
 for tick in tickers:
@@ -26,6 +36,9 @@ for tick in tickers:
     print("\t Transform data as INDICATOR_CONFIG")
     df=data_transform(df,tf_config)
     print(f"\ttransformed file {tick} length : {len(df)}")
+    if scale_config:
+        df=data_scale(df,scale_config)
+        print(f"\t scaling file")
     target_file = data_folder+tick+'.csv'
     print(f'Save as {target_file}')
     df.to_csv(target_file)
