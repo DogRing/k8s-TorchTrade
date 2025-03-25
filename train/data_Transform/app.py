@@ -37,7 +37,7 @@ for tick in tickers:
     df=data_transform(df,tf_config)
     print(f"\ttransformed file {tick} length : {len(df)}")
     if scale_config:
-        df=data_scale(df,scale_config,True,f'{data_folder}{scale_config.get('path')}/{tick}-')
+        df=data_scale(df,scale_config,True,f'{data_folder}{scale_config.get("path")}/{tick}-')
         print(f"\t scaling file")
     target_file = data_folder+tick+'.csv'
     print(f'Save as {target_file}')
