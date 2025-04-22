@@ -1,3 +1,6 @@
 scikit-learn
 pandas
 joblib
+arch
+scipy
+pykalman
