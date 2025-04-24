@@ -1,18 +1,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: data-period-c-0422
+  name: cpython-0422
   namespace: ttrade
   labels:
-    app: data-period-c
+    app: cpython
 spec:
   template:
     metadata:
-      name: data-period-c
+      name: cpython
     spec:
       restartPolicy: Never
       containers:
-      - name: data-period-c
+      - name: cpython
         image: dogring/tt-period:0.1
         imagePullPolicy: Always
         env:
@@ -28,7 +28,7 @@ spec:
             memory: "1.5Gi"
           limits: 
             cpu: "1"
-            memory: "3Gi"
+            memory: "4Gi"
         volumeMounts:
           - name: smb
             mountPath: "/source/local_values.py"

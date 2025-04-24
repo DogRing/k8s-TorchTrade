@@ -65,25 +65,21 @@ for tick in tickers:
 
     print(f"  start cpython")
     func(c_len,c_x,c_y,*converted_args)
-
-    print(f"  end cpython")
-    print(f"len: {len(y)}")
-    print(f"target {target_folder}")
     
     try:
         y_df = pd.DataFrame({'period':np.ctypeslib.as_array(c_y,shape=(x_len,))})
-        print("DataFrame - numpy 직접 변환")
+        print("  Numpy-DataFrame complete")
         y_df.index = df.index
         y_df.to_csv(target_folder+tick+'.csv')
-        print(f"CSV 저장: {target_folder+tick+'.csv'}")
+        print(f"save CSV: {target_folder+tick+'.csv'}")
     except Exception as e:
-        print(f"오류 발생: {str(e)}")
+        print(f"error: {str(e)}")
         try:
-            print("청크 단위 처리 시도...")
+            print("save with chunk...")
             CHUNK_SIZE = 100000
             
             with open(target_folder+tick+'.csv','w') as f:
-                f.write('timestamp,period\n')
+                f.write(',period\n')
             for i in range(0,x_len, CHUNK_SIZE):
                 end_idx = min(i + CHUNK_SIZE,x_len)
                 chunk_size = end_idx - 1
@@ -98,34 +94,9 @@ for tick in tickers:
 
                 chunk_df.to_csv(target_folder+tick+'.csv',mode='a',header=False)
 
-                print(f"chunk {i//CHUNK_SIZE+1} 처리 ({i}~{end_idx})")
+                print(f"chunk {i//CHUNK_SIZE+1} index ({i}~{end_idx})")
 
-            print("chunk 완")
+            print("Chunk-DataFrame complete")
         except Exception as chunk_error:
             print(f"chunk error: {str(chunk_error)}")
             raise
-
-
-
-    # try:
-    #     y = pd.DataFrame(list(c_y),columns=['period'])
-    #     print("DataFrame 성공")
-    # except Exception as e:
-    #     print(f"DataFrame 생성 실패: {str(e)}")
-    #     raise
-    # try:
-    #     y.index = df.index
-    #     print("index 할당")
-    # except ValueError as ve:
-    #     print(f"인덱스 길이 불일치: y({len(y)}) vs df({len(df)})")
-    #     raise
-    # print(f"target {target_folder}")
-    # try:
-    #     y.to_csv(target_folder+tick+'.csv')
-    #     print(f"{tick} CSV 저장 완료")
-    # except PermissionError:
-    #     print(f"권한 오류: {target_folder}")
-    #     raise
-    # except FileNotFoundError:
-    #     print(f"경로 없음: {target_folder}")
-    #     raise
