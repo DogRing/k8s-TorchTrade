@@ -50,5 +50,5 @@ void price_barrier(const int len, int* x, int* y, const int period, const float 
             }
         }
     }
-    printf("    end c code");
+    printf("    end c code\n");
 }

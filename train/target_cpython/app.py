@@ -67,7 +67,28 @@ for tick in tickers:
     func(c_len,c_x,c_y,*converted_args)
 
     print(f"  end cpython")
-    y = pd.DataFrame(list(c_y),columns=['period'])
-    y.index = df.index
-
-    y.to_csv(target_folder+tick+'.csv')
+    print(f"len: {len(y)}")
+    print(f"df index: {df.index}")
+    
+    try:
+        y = pd.DataFrame(list(c_y),columns=['period'])
+        print("DataFrame 성공")
+    except Exception as e:
+        print(f"DataFrame 생성 실패: {str(e)}")
+        raise
+    try:
+        y.index = df.index
+        print("index 할당")
+    except ValueError as ve:
+        print(f"인덱스 길이 불일치: y({len(y)}) vs df({len(df)})")
+        raise
+    print(f"target {target_folder}")
+    try:
+        y.to_csv(target_folder+tick+'.csv')
+        print(f"{tick} CSV 저장 완료")
+    except PermissionError:
+        print(f"권한 오류: {target_folder}")
+        raise
+    except FileNotFoundError:
+        print(f"경로 없음: {target_folder}")
+        raise
