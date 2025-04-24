@@ -1,13 +1,13 @@
 name:
 on:
   push:
-    branches: [ main ]
+    branches: [ main,cpython ]
     paths:
       - "train/target_cpython/**"
       - "!train/target_cpython/**.yaml"
       - "!train/target_cpython/**.yml" 
   pull_request:
-    branches: [ main ]
+    branches: [ main,cpython ]
     paths:
       - "train/target_cpython/**"
       - "!train/target_cpython/**.yaml"
