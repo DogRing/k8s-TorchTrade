@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cpython-0422
+  name: cpython
   namespace: ttrade
   labels:
     app: cpython
@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: cpython
-        image: dogring/tt-period:0.1
+        image: dogring/tt-period:0.2
         imagePullPolicy: Always
         env:
         - name: FUNCTION_NAME
