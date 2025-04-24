@@ -46,7 +46,6 @@ print(f"return array type: {return_type}\n")
 for tick in tickers:
     df = pd.read_csv(raw_folder+tick+'.csv',parse_dates=[0],index_col=[0])
     df = df.resample(rule='min').first()
-    df[['volume','value']]=df[['volume','value']].fillna(0)
     df=df.ffill()
 
     x = df[feature].to_numpy(dtype=np.int32,copy=True).flatten()
