@@ -29,10 +29,10 @@ arg_types = [
 if return_type == 'int':
     arg_types.append(ctypes.POINTER(ctypes.c_int32))
 else:
-    arg_types.append(ctypes.POINTER(ctypes.c_float32))
+    arg_types.append(ctypes.POINTER(ctypes.c_float))
 
 if set_volatility: 
-    arg_types.append(ctypes.POINTER(ctypes.c_float32))
+    arg_types.append(ctypes.POINTER(ctypes.c_float))
 
 for type_name in dynamic_arg_types:
     if type_name == 'int':
@@ -67,7 +67,7 @@ for tick in tickers:
         c_y = y.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
     else:
         y = np.zeros(x_len,dtype=np.float32)
-        c_y = y.ctypes.data_as(ctypes.POINTER(ctypes.c_float32))
+        c_y = y.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
 
     c_len = ctypes.c_int(x_len)
     c_x = x.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
@@ -83,7 +83,7 @@ for tick in tickers:
             volatility[i] = np.std(weighted_returns)
         scaled_vol = (volatility - np.min(volatility)) / (np.max(volatility) - np.min(volatility) + 1e-8)
         volat = volet_min + scaled_vol * (volet_max - volet_min)
-        c_vol = volat.ctypes.data_as(ctypes.POINTER(ctypes.c_float32))
+        c_vol = volat.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
         func(c_len,c_x,c_y,c_vol,*converted_args)
     else:
         func(c_len,c_x,c_y,*converted_args)
