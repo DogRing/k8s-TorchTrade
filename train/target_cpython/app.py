@@ -9,7 +9,7 @@ feature = os.environ.get('TARGET','close')
 c_file = os.environ.get('C_FILE','./libtarget.so')
 function_name = os.environ.get('FUNCTION_NAME','pred_period')
 function_args = os.environ.get('FUNCTION_ARGS','[0.0075]')
-function_arg_types = os.environ.get('ARG_TYPES','[int]')
+function_arg_types = os.environ.get('ARG_TYPES','["float"]')
 return_type = os.environ.get('RETURN_TYPE','int')
 
 args = json.loads(function_args)
@@ -19,8 +19,8 @@ func = getattr(_dll,function_name)
 
 arg_types = [
     ctypes.c_int,
-    ctypes.POINTER(ctypes.c_long),
-    ctypes.POINTER(ctypes.c_int)
+    ctypes.POINTER(ctypes.c_int32),
+    ctypes.POINTER(ctypes.c_int32)
 ]
 
 for type_name in dynamic_arg_types:
@@ -36,7 +36,7 @@ for i,arg in enumerate(args):
         if dynamic_arg_types[i] == 'int':
             converted_args.append(ctypes.c_int(arg))
         elif dynamic_arg_types[i] == 'float':
-            converted_args,append(ctypes.c_float(arg))
+            converted_args.append(ctypes.c_float(arg))
 
 for tick in tickers:
     df = pd.read_csv(raw_folder+tick+'.csv',parse_dates=[0],index_col=[0])

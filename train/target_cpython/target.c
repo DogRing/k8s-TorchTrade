@@ -37,7 +37,7 @@ void price_barrier(const int len, int* x, int* y, const int period, const float 
         upper = (unsigned long)(x[i] * (1+per));
         lower = (unsigned long)(x[i] * (1-per));
 
-        int max_j = (i + period + 1) < len ? (i + period + 1) : len;
+        int max_j = (i + period) < len ? (i + period) : len;
 
         for (int j=i+1;j<max_j;j++){
             if (upper < x[j]){
