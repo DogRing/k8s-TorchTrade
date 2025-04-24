@@ -27,11 +27,11 @@ void pred_period(const int len, int*x, int*y, const float per)
 void price_barrier(const int len, int* x, int* y, const int period, const float per )
 {
     unsigned long upper,lower;
-    printf("len: %d\n",len);
-    printf("x first/last: %d / %d\n",x[0],x[len-1]);
-    printf("y first/last: %d / %d\n",y[0],y[len-1]);
-    printf("period: %d\n",period);
-    printf("per: %f\n",per);
+    printf("   len: %d\n",len);
+    printf("   x first/last: %d / %d\n",x[0],x[len-1]);
+    printf("   y first/last: %d / %d\n",y[0],y[len-1]);
+    printf("   period: %d\n",period);
+    printf("   per: %f\n",per);
 
     for (int i=0;i<len;i++){
         upper = (unsigned long)(x[i] * (1+per));
@@ -50,4 +50,5 @@ void price_barrier(const int len, int* x, int* y, const int period, const float 
             }
         }
     }
+    printf("    end c code")
 }

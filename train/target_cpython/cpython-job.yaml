@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: data-period-c-1020
+  name: data-period-c-0422
   namespace: ttrade
   labels:
     app: data-period-c
@@ -10,16 +10,18 @@ spec:
     metadata:
       name: data-period-c
     spec:
-      nodeSelector:
-        gpu: nvidia
       restartPolicy: Never
       containers:
       - name: data-period-c
-        image: dogring/tt-period:1.0
-        imagePullPolicy: IfNotPresent
+        image: dogring/tt-period:0.1
+        imagePullPolicy: Always
         env:
-        - name: PERIOD
-          value: "0.0060"
+        - name: FUNCTION_NAME
+          value: "price_barrier"
+        - name: FUNCTION_ARGS
+          value: "[600, 0.1]"
+        - name: ARG_TYPES
+          value: '["int", "float"]'
         resources:
           requests:
             cpu: "500m"
@@ -32,17 +34,14 @@ spec:
             mountPath: "/source/local_values.py"
             subPath: "ttrade/local_values.py"
             readOnly: true
-          - name: smb-data
+          - name: smb
             mountPath: "/data/raw"
-            subPath: "ttrade/raw"
+            subPath: "ttrade/data/250422"
             readOnly: true
-          - name: smb-data
+          - name: smb
             mountPath: "/data/target"
-            subPath: "ttrade/target"
+            subPath: "ttrade/data/250422/target"
       volumes:
-        - name: smb-data
-          persistentVolumeClaim:
-            claimName: pvc-data-smb
         - name: smb
           persistentVolumeClaim:
             claimName: pvc-smb
