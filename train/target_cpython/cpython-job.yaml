@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cpython
+  name: cpython-0424
   namespace: ttrade
   labels:
     app: cpython
@@ -14,21 +14,27 @@ spec:
       containers:
       - name: cpython
         image: dogring/tt-period:0.2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
+        - name: TARGET
+          value: '5close'
         - name: FUNCTION_NAME
-          value: "price_barrier"
+          value: "price_barrier_volat"
         - name: FUNCTION_ARGS
-          value: "[600, 0.1]"
+          value: "[120]"
         - name: ARG_TYPES
-          value: '["int", "float"]'
+          value: '["int"]'
+        - name: VOLATILITY
+          value: "True"
+        - name: VOLATILITY_PER
+          value: "[0.01,0.02,14]"
         resources:
           requests:
             cpu: "500m"
             memory: "1.5Gi"
           limits: 
             cpu: "1"
-            memory: "4Gi"
+            memory: "3Gi"
         volumeMounts:
           - name: smb
             mountPath: "/source/local_values.py"
@@ -36,11 +42,11 @@ spec:
             readOnly: true
           - name: smb
             mountPath: "/data/raw"
-            subPath: "ttrade/data/250422"
+            subPath: "ttrade/data/250424"
             readOnly: true
           - name: smb
             mountPath: "/data/target"
-            subPath: "ttrade/data/250422/target"
+            subPath: "ttrade/data/250424/target"
       volumes:
         - name: smb
           persistentVolumeClaim:

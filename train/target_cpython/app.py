@@ -7,21 +7,32 @@ import os
 
 feature = os.environ.get('TARGET','close')
 c_file = os.environ.get('C_FILE','./libtarget.so')
-function_name = os.environ.get('FUNCTION_NAME','pred_period')
-function_args = os.environ.get('FUNCTION_ARGS','[0.0075]')
-function_arg_types = os.environ.get('ARG_TYPES','["float"]')
+function_name = os.environ.get('FUNCTION_NAME','price_barrier_volat')
+function_args = os.environ.get('FUNCTION_ARGS','[600]')
+function_arg_types = os.environ.get('ARG_TYPES','["int"]')
 return_type = os.environ.get('RETURN_TYPE','int')
+set_volatility = os.environ.get('VOLATILITY','False') == 'True'
+volatility_per = os.environ.get('VOLATILITY_PER','[0.01,0.02,14]')
 
 args = json.loads(function_args)
 dynamic_arg_types = json.loads(function_arg_types)
+if set_volatility:
+    volet_min,volet_max,volet_window = json.loads(volatility_per)
 _dll = ctypes.cdll.LoadLibrary(c_file)
 func = getattr(_dll,function_name)
 
 arg_types = [
     ctypes.c_int,
-    ctypes.POINTER(ctypes.c_int32),
     ctypes.POINTER(ctypes.c_int32)
 ]
+
+if return_type == 'int':
+    arg_types.append(ctypes.POINTER(ctypes.c_int32))
+else:
+    arg_types.append(ctypes.POINTER(ctypes.c_float32))
+
+if set_volatility: 
+    arg_types.append(ctypes.POINTER(ctypes.c_float32))
 
 for type_name in dynamic_arg_types:
     if type_name == 'int':
@@ -54,7 +65,7 @@ for tick in tickers:
     if return_type == 'int':
         y = np.zeros(x_len,dtype=np.int32)
         c_y = y.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
-    if return_type == 'float':
+    else:
         y = np.zeros(x_len,dtype=np.float32)
         c_y = y.ctypes.data_as(ctypes.POINTER(ctypes.c_float32))
 
@@ -62,7 +73,20 @@ for tick in tickers:
     c_x = x.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
 
     print(f"  start cpython")
-    func(c_len,c_x,c_y,*converted_args)
+    if set_volatility:
+        print(f"  set volatility")
+        returns = np.diff(np.log(x))
+        volatility = np.zeros_like(x)
+        for i in range(volet_window, x_len):
+            weights = np.arange(1, volet_window+1)
+            weighted_returns = returns[i-volet_window:i] * weights
+            volatility[i] = np.std(weighted_returns)
+        scaled_vol = (volatility - np.min(volatility)) / (np.max(volatility) - np.min(volatility) + 1e-8)
+        volat = volet_min + scaled_vol * (volet_max - volet_min)
+        c_vol = volat.ctypes.data_as(ctypes.POINTER(ctypes.c_float32))
+        func(c_len,c_x,c_y,c_vol,*converted_args)
+    else:
+        func(c_len,c_x,c_y,*converted_args)
     
     try:
         y_df = pd.DataFrame({'period':np.ctypeslib.as_array(c_y,shape=(x_len,))})
