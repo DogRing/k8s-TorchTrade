@@ -39,7 +39,7 @@ for type_name in dynamic_arg_types:
         arg_types.append(ctypes.c_int)
     elif type_name == 'float':
         arg_types.append(ctypes.c_float)
-func.arg_types = arg_types
+func.argtypes = arg_types
 
 converted_args = []
 for i,arg in enumerate(args):
