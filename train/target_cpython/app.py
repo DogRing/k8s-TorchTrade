@@ -84,7 +84,7 @@ for tick in tickers:
         scaled_vol = (volatility - np.min(volatility)) / (np.max(volatility) - np.min(volatility) + 1e-8)
         volat = volat_min + scaled_vol * (volat_max - volat_min)
         print(f"first: {volat[0]} last: {volat[-1]}")
-        c_vol = volat.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
+        c_vol = volat.astype(np.float32).ctypes.data_as(ctypes.POINTER(ctypes.c_float))
         func(c_len,c_x,c_y,c_vol,*converted_args)
     else:
         func(c_len,c_x,c_y,*converted_args)
