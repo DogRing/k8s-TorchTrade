@@ -16,15 +16,19 @@ spec:
   - name: test-py
     image: python:3.9-slim
     command:
-      - "sleep"
-      - "604800"
+        - "sh"
+        - "-c"
+        - |
+          pip install pandas
+          pip3 install torch --index-url https://download.pytorch.org/whl/cpu
+          sleep 604800
     imagePullPolicy: IfNotPresent
     resources:
       requests:
         cpu: "1"
         memory: "2Gi"
       limits: 
-        cpu: "3"
+        cpu: "2"
         memory: "6Gi"
     volumeMounts:
     # - name: config
@@ -38,7 +42,25 @@ spec:
         subPath: "ttrade/raw"
       - name: smb
         mountPath: "/data/data"
-        subPath: "ttrade/data/241212"
+        subPath: "ttrade/data/250424"
+      - name: smb
+        mountPath: "/data/raw2"
+        subPath: "ttrade/data/raw"
+      - name: smb
+        mountPath: "/source/data_transform.py"
+        subPath: "ttrade/lib/data_transform.py"
+        readOnly: true
+      - name: smb
+        mountPath: "/source/data_loader.py"
+        subPath: "ttrade/lib/data_loader.py"
+        readOnly: true
+      - name: smb
+        mountPath: "/source/indicators.py"
+        subPath: "ttrade/lib/indicators.py"
+        readOnly: true
+      - name: smb
+        mountPath: "/src"
+        subPath: "pod"
   volumes:
     # - name: datadir
     #   hostPath:
