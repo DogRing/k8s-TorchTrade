@@ -10,6 +10,10 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
           containers:
           - name: data-smb
             image: dogring/tt-transform:0.2
@@ -22,8 +26,8 @@ spec:
                 cpu: "1"
                 memory: "2Gi"
             env:
-              - name: FILE_PATHS
-                value: "/data/data/"
+              - name: DATA_LEN
+                value: "2500000"
             volumeMounts:
               - name: smb
                 mountPath: "/source/local_values.py"
