@@ -17,7 +17,7 @@ volatility_per = os.environ.get('VOLATILITY_PER','[0.01,0.02,14]')
 args = json.loads(function_args)
 dynamic_arg_types = json.loads(function_arg_types)
 if set_volatility:
-    volet_min,volet_max,volet_window = json.loads(volatility_per)
+    volat_min,volat_max,volat_window = json.loads(volatility_per)
 _dll = ctypes.cdll.LoadLibrary(c_file)
 func = getattr(_dll,function_name)
 
@@ -77,12 +77,13 @@ for tick in tickers:
         print(f"  set volatility")
         returns = np.diff(np.log(x))
         volatility = np.zeros_like(x)
-        for i in range(volet_window, x_len):
-            weights = np.arange(1, volet_window+1)
-            weighted_returns = returns[i-volet_window:i] * weights
+        for i in range(volat_window, x_len):
+            weights = np.arange(1, volat_window+1)
+            weighted_returns = returns[i-volat_window:i] * weights
             volatility[i] = np.std(weighted_returns)
         scaled_vol = (volatility - np.min(volatility)) / (np.max(volatility) - np.min(volatility) + 1e-8)
-        volat = volet_min + scaled_vol * (volet_max - volet_min)
+        volat = volat_min + scaled_vol * (volat_max - volat_min)
+        print(f"first: {volat[0]} last: {volat[-1]}")
         c_vol = volat.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
         func(c_len,c_x,c_y,c_vol,*converted_args)
     else:
