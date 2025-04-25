@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cpython-0424
+  name: cpython
   namespace: ttrade
   labels:
     app: cpython
@@ -27,7 +27,7 @@ spec:
         - name: VOLATILITY
           value: "True"
         - name: VOLATILITY_PER
-          value: "[0.01,0.02,14]"
+          value: "[0.015,0.02,14]"
         resources:
           requests:
             cpu: "500m"
