@@ -25,7 +25,7 @@ else:
     print(f"Config file {scale_config_file} not found")
 
 print("")
-for tick in tickers:
+for i,tick in enumerate(tickers):
     folder_path=raw_folder+tick+'/'
     print(f'Data Load from {folder_path} with {data_length}')
     df=load_data(folder_path,data_length)
@@ -39,7 +39,8 @@ for tick in tickers:
     if scale_config:
         df=data_scale(df,scale_config,True,f'{data_folder}{scale_config.get("path")}/{tick}-')
         print(f"\t scaling file")
+    non_nan_index = df.index.get_loc(df.index[~df.isna().any(axis=1)][0])
     target_file = data_folder+tick+'.csv'
-    print(f'Save as {target_file}')
-    df.to_csv(target_file)
+    print(f'Save as {target_file}\t{i+1} / {len(tickers)}\t {len(df)} - {non_nan_index}')
+    df[non_nan_index:].to_csv(target_file)
 print(df.columns)
