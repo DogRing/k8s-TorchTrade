@@ -38,6 +38,7 @@ def candle_interval():
     try:
         while True:
             while time.time()<now_interval: pass
+            
             index=int(now_interval%60/interval)
             if not q.empty():
                 price,ttms,volume=q.get()
