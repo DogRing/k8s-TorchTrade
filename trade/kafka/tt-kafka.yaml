@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: kafka-krw-xrp
+  name: kafka-krw-btc
   namespace: ttrade
 spec:
   selector:
     matchLabels:
-      app: kafka-krw-xrp
+      app: kafka-krw-btc
   replicas: 3
   updateStrategy:
     type: RollingUpdate
@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: kafka-krw-xrp
+        app: kafka-krw-btc
     spec:
       tolerations:
       - key: "node-role.kubernetes.io/control-plane"
@@ -25,11 +25,11 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchLabels:
-                app: kafka-krw-xrp
+                app: kafka-krw-btc
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: kafka-bit
-        image: dogring/tt-kafka:1.6
+        image: dogring/tt-kafka:1.7
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -40,11 +40,11 @@ spec:
             cpu: "50m"
         env:
         - name: TOPIC
-          value: krw-xrp
+          value: krw-btc
         - name: TICK
-          value: KRW-XRP
+          value: KRW-BTC
         - name: INTERVAL
-          value: '10'
+          value: '30'
         - name: ZK_SERVICE
           value: zk-cs.zookeeper.svc:2181
         - name: KAFKA_SERVICE

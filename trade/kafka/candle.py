@@ -37,8 +37,7 @@ def candle_interval():
     now_interval=now-now%interval+interval
     try:
         while True:
-            if time.time()<now_interval:
-                continue
+            while time.time()<now_interval: pass
             index=int(now_interval%60/interval)
             if not q.empty():
                 price,ttms,volume=q.get()
@@ -59,7 +58,7 @@ def candle_interval():
             now_interval+=interval
             left_time=now_interval-time.time()
             if left_time<0: print("interval is too short")
-            time.sleep(left_time-0.035)
+            else: time.sleep(left_time-0.0005)
     except Exception as e:
         print(f"Error message: {str(e)}")
     finally:
