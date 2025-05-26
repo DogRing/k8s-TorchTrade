@@ -14,7 +14,7 @@ on:
       - "!trade/kafka/**.yml" 
 
 env:
-  IMAGE_NAME: dogring/tt-period
+  IMAGE_NAME: dogring/tt-kafka
   IMAGE_TAG: 1.7
   WORKSPACE: trade/kafka
 
