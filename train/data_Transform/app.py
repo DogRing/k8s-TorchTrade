@@ -37,8 +37,9 @@ for i,tick in enumerate(tickers):
     dfs=data_transform(df,tf_config)
     print(f"\ttransformed file {tick} length : {len(df)}")
     if scale_config:
-        os.makedirs(sacler_path, exist_ok=True)
-        dfs=data_scale(dfs,scale_config,True,sacler_path)
+        scaler_path=f'{data_folder}{scale_config.get('path')}/{tick}/'
+        os.makedirs(scaler_path, exist_ok=True)
+        dfs=data_scale(dfs,scale_config,True,scaler_path)
         print(f"\t scaling file")
     df=pd.concat(dfs,axis=1)
     non_nan_index = df.index.get_loc(df.index[~df.isna().any(axis=1)][0])
