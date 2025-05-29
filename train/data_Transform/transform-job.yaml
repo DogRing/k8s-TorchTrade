@@ -16,7 +16,7 @@ spec:
             effect: "NoSchedule"
           containers:
           - name: data-smb
-            image: dogring/tt-transform:0.2
+            image: dogring/tt-transform:0.3
             imagePullPolicy: IfNotPresent
             resources:
               requests:
