@@ -11,7 +11,7 @@ for i in "${!FOLDERS[@]}"; do
   torch-model-archiver --model-name "${NAMES[i]}" \
                        --version "${VERSIONS[i]}" \
                        --model-file "${MODEL_FILE}" \
-                       --serialized-file "${PARAMS[i]}" \
+                       --serialized-file "${FOLDER}/${PARAMS[i]}" \
                        --handler "${FOLDER}/handler.py" \
                        --extra-files "${EXTRA_FILES}" \
                        --export-path model-store
