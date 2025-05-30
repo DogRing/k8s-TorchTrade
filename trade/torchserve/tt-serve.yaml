@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: serve-segrnn
+  name: serve-model
   namespace: ttrade
 spec:
   selector:
-    app: serve-segrnn
+    app: serve-model
   ports:
     - port: 8080
       targetPort: 8080
@@ -21,17 +21,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: serve-segrnn
+  name: serve-model
   namespace: ttrade
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: serve-segrnn
+      app: serve-model
   template:
     metadata:
       labels:
-        app: serve-segrnn
+        app: serve-model
     spec:
       tolerations:
       - key: "node-role.kubernetes.io/control-plane"
@@ -42,21 +42,21 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchLabels:
-                app: serve-segrnn
+                app: serve-model
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: serve-model
-        image: dogring/tt-serve:1.2
-        imagePullPolicy: Always
+        image: dogring/tt-serve:1.3
+        imagePullPolicy: IfNotPresent
         env:
         - name: MODEL_FOLDERS
-          value: "./model1|./model2"
+          value: "./model1"
         - name: MODEL_VERSIONS
-          value: "1.0|1.0"
+          value: "1.0"
         - name: MODEL_NAMES
-          value: "seg_rnn|seg_rnn_one"
+          value: "mt_model"
         - name: PARAM_FILES
-          value: "model1.pth|model2.pth"
+          value: "model1.pth"
         - name: TS_CONFIG_FILE
           value: /home/model-server/config.properties
         ports:
@@ -76,19 +76,7 @@ spec:
         volumeMounts:
         - name: smb
           mountPath: "/home/model-server/model1"
-          subPath: "ttrade/model/SegRNN"
-          readOnly: true
-        - name: smb
-          mountPath: "/home/model-server/model2"
-          subPath: "ttrade/model/SegRNN-one"
-          readOnly: true
-        - name: smb
-          mountPath: "/home/model-server/model1.pth"
-          subPath: "ttrade/model/SegRNN/results/SegRNN.pth"
-          readOnly: true
-        - name: smb
-          mountPath: "/home/model-server/model2.pth"
-          subPath: "ttrade/model/results/SegRNN2.pth"
+          subPath: "ttrade/250530/model"
           readOnly: true
         - name: config
           mountPath: "/home/model-server/config.properties"

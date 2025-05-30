@@ -12,7 +12,7 @@ for i in "${!FOLDERS[@]}"; do
                        --version "${VERSIONS[i]}" \
                        --model-file "${MODEL_FILE}" \
                        --serialized-file "${PARAMS[i]}" \
-                       --handler app.py \
+                       --handler "${FOLDER}/handler.py" \
                        --extra-files "${EXTRA_FILES}" \
                        --export-path model-store
 done
