@@ -54,7 +54,7 @@ spec:
         - name: MODEL_VERSIONS
           value: "1.0"
         - name: MODEL_NAMES
-          value: "mt_model"
+          value: "mt1"
         - name: PARAM_FILES
           value: "model1.pth"
         - name: TS_CONFIG_FILE
