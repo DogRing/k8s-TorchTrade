@@ -27,7 +27,7 @@ def request_data(tick,to_time='',count=200):
 def kf_message(topic,message):
     key = str(message['timestamp'])
     try:
-        message = json.dump(message).encode('utf-8')
+        message = json.dumps(message).encode('utf-8')
         kf.produce(topic,key=key.encode('utf-8'), value=serialized_message)
         kf.poll(0)
     except Exception as e:
