@@ -102,8 +102,10 @@ def range_minute():
             val = json.loads(msg.value().decode('utf-8'))
             if int(val['timestamp']) >= ts_head:
                 _ohl[head] = [val['open'],val['high'],val['low']]
+                _c = val['close']
                 _v[head] = val['value']
 
+                print(val)
                 ts_head += 60
                 head = (head + 1) % RANGE
 
