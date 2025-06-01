@@ -28,7 +28,7 @@ def kf_message(topic,message):
     key = str(message['timestamp'])
     try:
         message = json.dumps(message).encode('utf-8')
-        kf.produce(topic,key=key.encode('utf-8'), value=serialized_message)
+        kf.produce(topic,key=key.encode('utf-8'), value=message)
         kf.poll(0)
     except Exception as e:
         print(f"Failed to send message: {str(e)}")
