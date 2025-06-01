@@ -30,6 +30,7 @@ def kf_message(topic,message):
         message = json.dumps(message).encode('utf-8')
         kf.produce(topic,key=key.encode('utf-8'), value=message)
         kf.poll(0)
+        kf.flush()
     except Exception as e:
         print(f"Failed to send message: {str(e)}")
 
@@ -48,6 +49,8 @@ def range_minute():
     ts_head = time.mktime(time.strptime(batch[-1]['candle_date_time_utc'], '%Y-%m-%dT%H:%M:%S'))
     data_sum = 0 
 
+    print(f'{TOPIC}-{RANGE}')
+    
     while DATA > 0:
         for tick in reversed(batch):
             date_time_utc = time.strptime(tick['candle_date_time_utc'], '%Y-%m-%dT%H:%M:%S')
@@ -76,7 +79,6 @@ def range_minute():
                 kf_message(f'{TOPIC}-{RANGE}',message={'tick':TICK,'timestamp':ts_head,'open':open,'low':low,'high':high,'close':close,'value':volume})
                 DATA -= 1
             
-        kf.flush()
         time.sleep(3)
         end_string = time.strftime('%Y-%m-%dT%H:%M:%S',time.localtime(ts_tick+200*60))
         batch = request_data(TICK,'&to='+end_string)
@@ -90,15 +92,15 @@ def range_minute():
     })
     consumer.subscribe([TOPIC])
 
+    print()
     try:
-        msg = consumer.poll(timeout=60)
         while True:
+            msg = consumer.poll(timeout=60)
             if msg is None:
                 print("No message received, continuing...")
                 continue
             val = json.loads(msg.value().decode('utf-8'))
             if int(val['timestamp']) >= ts_head:
-                print(val['timestamp'], ts_head)
                 _ohl[head] = [val['open'],val['high'],val['low']]
                 _v[head] = val['value']
 
@@ -111,6 +113,5 @@ def range_minute():
                 close = int(_c)
                 volume = float(_v.sum())
                 kf_message(f'{TOPIC}-{RANGE}',message={'tick':TICK,'timestamp':ts_head,'open':open,'low':low,'high':high,'close':close,'value':volume})
-            msg = consumer.poll(timeout=60)
     finally:
         consumer.close()
