@@ -8,7 +8,7 @@ import os
 kafka_host=os.environ.get('KAFKA_SERVICE','my-cluster-kafka-bootstrap.kafka.svc:9092')
 TICK = os.environ['TICK']
 TOPIC = os.environ['TOPIC']
-RANGE = int(os.environ('RANGE'))
+RANGE = int(os.environ['RANGE'])
 DATA = int(os.environ.get('DATA',100))
 
 kf=Producer({
