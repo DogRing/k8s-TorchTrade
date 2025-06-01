@@ -1,0 +1,17 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: krw-btc-240
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: "krw-btc-240"
+spec:
+  ## 토픽을 나눠서 저장 (병렬 저장, 읽기)
+  partitions: 1
+  ## 토픽을 복사해서 저장
+  replicas: 2
+  config:
+    retention.ms: 1728000000
+    retention.bytes: 67108864
+    min.insync.replicas: 2
+    cleanup.policy: delete

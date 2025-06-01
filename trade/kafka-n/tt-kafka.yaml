@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-krw-btc
+  namespace: ttrade
+spec:
+  selector:
+    matchLabels:
+      app: kafka-krw-btc
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: kafka-krw-btc
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: kafka-krw-btc
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: kafka-bit
+        image: dogring/tt-kafka:1.7
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+        env:
+        - name: TICK
+          value: KRW-BTC
+        - name: TOPIC
+          value: krw-btc-240
+        - name: RANGE
+          value: '240'
+        - name: DATA
+          value: '10000'
+      restartPolicy: Always
