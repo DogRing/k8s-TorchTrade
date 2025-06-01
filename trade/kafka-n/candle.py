@@ -43,7 +43,7 @@ def range_minute():
     head = 0
 
     now = time.time() // 60 * 60
-    end_time = int(now) - ((DATA+RANGE) * 60)
+    end_time = int(now) - ((DATA+RANGE+10) * 60)
     end_string = time.strftime('%Y-%m-%dT%H:%M:%S',time.localtime(end_time))
     batch = request_data(TICK,'&to='+end_string)
     ts_head = time.mktime(time.strptime(batch[-1]['candle_date_time_utc'], '%Y-%m-%dT%H:%M:%S'))
