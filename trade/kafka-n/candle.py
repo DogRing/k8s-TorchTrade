@@ -34,6 +34,7 @@ def kf_message(topic,message):
         print(f"Failed to send message: {str(e)}")
 
 def range_minute():
+    global DATA
     cols = ['opening_price', 'high_price', 'low_price']
     _ohl = np.zeros((RANGE,3), dtype=np.int64)
     _c = 0
