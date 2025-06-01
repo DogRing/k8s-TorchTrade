@@ -68,11 +68,11 @@ def range_minute():
             data_sum += 1
         
             if data_sum > RANGE:
-                open = _ohl[(head-1) % RANGE][0]
-                high = _ohl[:,1].max()
-                low = _ohl[:,2].min()
-                close = _c
-                volume = _v.sum()
+                open = int(_ohl[(head-1) % RANGE][0])
+                high = int(_ohl[:,1].max())
+                low = int(_ohl[:,2].min())
+                close = int(_c)
+                volume = float(_v.sum())
                 kf_message(f'{TOPIC}-{RANGE}',message={'tick':TICK,'timestamp':ts_head,'open':open,'low':low,'high':high,'close':close,'value':volume})
                 DATA -= 1
             
