@@ -93,6 +93,9 @@ def range_minute():
     try:
         msg = consumer.poll(timeout=60)
         while True:
+            if msg is None:
+                print("No message received, continuing...")
+                continue
             val = json.loads(msg.value().decode('utf-8'))
             if int(val['timestamp']) >= ts_head:
                 print(val['timestamp'], ts_head)
