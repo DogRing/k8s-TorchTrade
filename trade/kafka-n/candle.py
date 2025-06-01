@@ -71,7 +71,7 @@ def range_minute():
             data_sum += 1
         
             if data_sum > RANGE:
-                open = int(_ohl[(head-1) % RANGE][0])
+                open = int(_ohl[(head+1) % RANGE][0])
                 high = int(_ohl[:,1].max())
                 low = int(_ohl[:,2].min())
                 close = int(_c)
@@ -107,7 +107,7 @@ def range_minute():
                 ts_head += 60
                 head = (head + 1) % RANGE
 
-                open = int(_ohl[(head-1) % RANGE][0])
+                open = int(_ohl[(head+1) % RANGE][0])
                 high = int(_ohl[:,1].max())
                 low = int(_ohl[:,2].min())
                 close = int(_c)
