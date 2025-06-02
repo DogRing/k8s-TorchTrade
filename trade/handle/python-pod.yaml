@@ -29,9 +29,9 @@ spec:
       value: "30"
     - name: DATA
       value: "10000"
-    - name: LARGE_N
+    - name: LARGE
       value: "[240]"
-    - name: DATA_N
+    - name: DATA_N_LENGTH
       value: "{'240': 250}"
     - name: ACCESS_KEY
       valueFrom:

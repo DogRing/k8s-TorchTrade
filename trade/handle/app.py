@@ -39,8 +39,8 @@ with open(SCALER_CONFIG,'r') as f:
     sc_config=json.load(f)
 
 n_config = copy.deepcopy(tf_config)
-n_config["data"] = [i for i in tf_config["data"] if "RANGE" in i and i["RANGE"] in LARGE_N]
-tf_config["data"] = [i for i in tf_config["data"] if "RANGE" not in i or i["RANGE"] not in LARGE_N]
+n_config["data"] = [i for i in tf_config["data"] if "RANGE" in i and i["RANGE"] in DATA_N]
+tf_config["data"] = [i for i in tf_config["data"] if "RANGE" not in i or i["RANGE"] not in DATA_N]
 
 consumer = Consumer({
     'bootstrap.servers' : 'my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092',
@@ -48,7 +48,7 @@ consumer = Consumer({
     'auto.offset.reset' : 'earliest',
     'enable.auto.commit' : False,
 })
-consumer.subscribe([TOPIC]+[f'{TOPIC}-{n}' for n in LARGE_N])
+consumer.subscribe([TOPIC]+[f'{TOPIC}-{n}' for n in DATA_N])
 
 
 x_buf = np.zeros((ROWS, COLS), dtype=np.float32)
@@ -65,7 +65,7 @@ n_base_df = {k: pd.DataFrame(n_buf[k],  columns=cols) for k in DATA_N }
 n_time_df = {k: pd.DataFrame(n_t_buf[k], columns=['timestamp']) for k in DATA_N }
 _n_order = {k: np.arange(v) for k,v in DATA_N.items() } 
 n_order = _n_order
-n_head = { k: 0 for k in LARGE_N }
+n_head = { k: 0 for k in DATA_N }
 head = 0
 _index_values = base_df.index.view("int64")
 
