@@ -2,6 +2,7 @@ from local_values import data_folder
 import requests
 import numpy as np
 import pyupbit
+import json
 import os
 
 url=os.environ['MODEL_URL']
