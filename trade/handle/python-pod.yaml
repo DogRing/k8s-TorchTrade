@@ -12,7 +12,7 @@ spec:
     effect: "NoSchedule"
   containers:
   - name: trade-bit
-    image: dogring/tt-trade:1.0
+    image: dogring/tt-trade:1.1
     imagePullPolicy: IfNotPresent
     resources:
       requests:
@@ -20,11 +20,19 @@ spec:
         cpu: "25m"
     env:
     - name: MODEL_URL
-      value: http://serve-segrnn.ttrade.svc.cluster.local:8080/predictions/seg_rnn
+      value: http://serve-model.ttrade.svc.cluster.local:8080/predictions/mt1
     - name: TOPIC
       value: krw-btc
     - name: TICK
       value: KRW-BTC
+    - name: INTERVAL
+      value: "30"
+    - name: DATA
+      value: "10000"
+    - name: LARGE_N
+      value: "[240]"
+    - name: DATA_N
+      value: "{'240': 250}"
     - name: ACCESS_KEY
       valueFrom:
         secretKeyRef:
@@ -37,16 +45,10 @@ spec:
           key: secretkey
     volumeMounts:
     - name: smb
-      mountPath: "/data/data/scaler"
-      subPath: "ttrade/data/scaler"
-      readOnly: true
-    - name: config
-      mountPath: "/etc/config"
+      mountPath: "/data/data"
+      subPath: "ttrade/250530/data"
       readOnly: true
   volumes:
   - name: smb
     persistentVolumeClaim:
       claimName: pvc-smb
-  - name: config
-    configMap:
-      name: trade-config
