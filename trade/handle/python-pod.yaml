@@ -48,6 +48,18 @@ spec:
       mountPath: "/data/data"
       subPath: "ttrade/250530/data"
       readOnly: true
+    - name: smb
+      mountPath: "/source/local_values.py"
+      subPath: "ttrade/local_values.py"
+      readOnly: true
+    - name: smb
+      mountPath: "/source/indicators.py"
+      subPath: "ttrade/lib/indicators.py"
+      readOnly: true
+    - name: smb
+      mountPath: "/source/data_transform.py"
+      subPath: "ttrade/lib/data_transform.py"
+      readOnly: true
   volumes:
   - name: smb
     persistentVolumeClaim:
