@@ -21,6 +21,13 @@ DATA_N = ast.literal_eval(os.environ.get('DATA_N_LENGTH','{}'))
 DATA_CONFIG = os.environ.get('DATA_CONFIG',f'{data_folder}indicator.json')
 SCALER_CONFIG = os.environ.get('SCALER_CONFIG',f'{data_folder}scale.json')
 
+print(f"TICK: {TICK}")
+print(f"TOPIC: {TOPIC}")
+print(f"INTERVAL: {INTERVAL}")
+print(f"DATA: {DATA}")
+print(f"LARGE_N: {LARGE_N}")
+print(f"DATA_N: {DATA_N}")
+
 cols = ['open','high','low','close','value']
 SEP = 60 // INTERVAL
 ROWS = DATA * SEP
@@ -117,7 +124,7 @@ try:
         feed_one(msg)
         msg = consumer.poll(timeout=1)
 
-    print(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(x_buf[-1][0])))}\tFirst batch: {len(batch)}")
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(index_ns[(head-1) % ROWS]/1000000000)))}\tFirst batch: {len(batch)}")
 
     while True:
         msg = consumer.poll(timeout=INTERVAL+5)
