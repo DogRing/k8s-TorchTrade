@@ -112,7 +112,7 @@ try:
     for msg in batch:
         feed_one(msg)
     
-    msg = consume.poll(timeout=10)
+    msg = consumer.poll(timeout=10)
     while msg is not None:
         feed_one(msg)
         msg = consumer.poll(timeout=1)
