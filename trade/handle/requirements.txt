@@ -4,3 +4,4 @@ requests
 pyupbit
 confluent-kafka
 joblib
+scikit-learn
