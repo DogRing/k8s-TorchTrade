@@ -9,6 +9,7 @@ url=os.environ['MODEL_URL']
 access_key=os.environ['ACCESS_KEY']
 secret_key=os.environ['SECRET_KEY']
 upbit=pyupbit.Upbit(access_key,secret_key)
+ticker=os.environ.get('TICK','KRW-BTC')
 MODEL_CONFIG = os.environ.get('MODEL_CONFIG',f'{data_folder}model.json')
 
 with open(MODEL_CONFIG,'r') as f:
@@ -40,9 +41,9 @@ def ttrade(dfs,time_df):
 
     print(f"{result}")
 
-    if result == 0: 
+    if result == 0 & position = 0: 
         print(upbit.buy_market_order(ticker, upbit.get_balance("KRW")*0.985))
         position = 1
-    elif result == 2:
+    elif result == 2 & position = 1:
         print(upbit.sell_market_order(ticker, upbit.get_balance(ticker)*0.985))
         position = 0
