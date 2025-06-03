@@ -24,7 +24,7 @@ def ttrade(dfs,time_df):
     x_parts = [dfs[tf][valid_cols[tf]].iloc[-in_dims[tf]:]
             .to_numpy(dtype=np.float32, copy=False)
             for tf in timeframes]
-    t_parts = [t_view[tf].iloc[-in_dims[tf]:]
+    t_parts = [time_df[tf].iloc[-in_dims[tf]:]
             .to_numpy(dtype=np.float32, copy=False)
             for tf in timeframes]
     payload = b''.join(
