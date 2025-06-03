@@ -2,6 +2,7 @@ from local_values import data_folder
 from data_transform import data_transform,data_scale
 from ttrade import ttrade
 
+from contextlib import redirect_stdout,redirect_stderr
 from confluent_kafka import Consumer
 import numpy as np
 import pandas as pd
@@ -10,6 +11,8 @@ import copy
 import time
 import ast
 import os
+
+buf = io.StringIO()
 
 TICK = os.environ.get('TICK','KRW-BTC')
 TOPIC = os.environ.get('TOPIC','krw-btc')
@@ -137,16 +140,22 @@ try:
             if not n_res:
                 order = (order_tem + head) % ROWS
                 x_view = base_df.take(order)
-                dfs = data_transform(x_view,tf_config,0)
+                with redirect_stdout(buf), redirect_stderr(buf):
+                    dfs = data_transform(x_view,tf_config,0)
                 t_view = { k:time_df.loc[dfs[k].index] for k in dfs }
 
                 n_x_view = {k: n_base_df[k].take(n_order[k]) for k in DATA_N }
                 n_t_view = {k: n_time_df[k].take(n_order[k]) for k in DATA_N }
-                n_dfs = data_transform(n_x_view,n_config,2)
+                with redirect_stdout(buf), redirect_stderr(buf):
+                    n_dfs = data_transform(n_x_view,n_config,2)
 
-                dfs = data_scale(dfs|n_dfs,sc_config,save=False,path=f'{data_folder}{sc_config.get("path")}/{TICK}/')
+                with redirect_stdout(buf), redirect_stderr(buf):
+                    dfs = data_scale(dfs|n_dfs,sc_config,save=False,path=f'{data_folder}{sc_config.get("path")}/{TICK}/')
                 print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}\t apply ttrade")
                 ttrade(dfs,t_view|n_t_view)
+                
+                buf.truncate(0)
+                buf.seek(0)
             else:
                 n_order[n_res] = _n_order[n_res] + n_head[n_res] % DATA_N[n_res]
 finally:
