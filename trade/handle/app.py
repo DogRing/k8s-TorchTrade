@@ -107,13 +107,25 @@ def feed_one(m):
         x_buf[head] = [val[k] for k in cols]
         t_buf[head] = angle_encoding(timestamp)
         _index_values[head] = timestamp
+
+        base_df.iloc[head, :] = x_buf[head]
+        time_df.iloc[head, 0] = t_buf[head]
+        base_df.index.values[head] = timestamp
+        time_df.index.values[head] = timestamp
+
         head = (head + 1) % ROWS
         return False
+
     elif len(parts)== 3:
         l_n = parts[2]
-        n_buf[l_n][n_head[l_n]] = [val[k] for k in cols]
-        n_t_buf[l_n][n_head[l_n]] = angle_encoding(timestamp)
-        n_head[l_n] = (n_head[l_n] + 1) % DATA_N[l_n]
+        idx = n_head[l_n]
+        n_buf[l_n][idx] = [val[k] for k in cols]
+        n_t_buf[l_n][idx] = angle_encoding(timestamp)
+
+        n_base_df[l_n].iloc[idx, :] = n_buf[l_n][idx]
+        n_time_df[l_n].iloc[idx, 0] = n_t_buf[l_n][idx]
+
+        n_head[l_n] = (idx + 1) % DATA_N[l_n]
         return l_n
     else:
         print("error in topic value")
