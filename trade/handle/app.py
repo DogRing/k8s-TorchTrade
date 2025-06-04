@@ -59,6 +59,7 @@ consumer.subscribe([TOPIC]+[f'{TOPIC}-{n}' for n in DATA_N])
 x_buf = np.zeros((ROWS, COLS), dtype=np.float32)
 t_buf = np.zeros(ROWS, dtype=np.float32)
 index_ns = np.zeros(ROWS, dtype=np.int64)
+
 base_df = pd.DataFrame(x_buf, columns=cols, index=pd.DatetimeIndex(index_ns))
 time_df = pd.DataFrame(t_buf, columns=['timestamp'], index=pd.DatetimeIndex(index_ns))
 order_tem = np.arange(ROWS, dtype=np.int64)
@@ -66,8 +67,10 @@ x_idx=np.where(order_tem % SEP == (SEP-1))[0]
 
 n_buf = { k: np.zeros((v,COLS), dtype=np.float32) for k,v in DATA_N.items() }
 n_t_buf = { k: np.zeros(v, dtype=np.float32) for k,v in DATA_N.items() }
-n_base_df = {k: pd.DataFrame(n_buf[k],  columns=cols) for k in DATA_N }
-n_time_df = {k: pd.DataFrame(n_t_buf[k], columns=['timestamp']) for k in DATA_N }
+n_index_ns = {k: np.zeros(v, dtype=np.int64) for k, v in DATA_N.items()}
+
+n_base_df = {k: pd.DataFrame(n_buf[k],  columns=cols, index=pd.DatetimeIndex(n_index_ns[k])) for k in DATA_N }
+n_time_df = {k: pd.DataFrame(n_t_buf[k], columns=['timestamp'], index=pd.DatetimeIndex(n_index_ns[k])) for k in DATA_N }
 _n_order = {k: np.arange(v) for k,v in DATA_N.items() } 
 n_order = _n_order.copy()
 n_head = { k: 0 for k in DATA_N }
@@ -109,22 +112,16 @@ def feed_one(m):
         t_buf[head] = angle_encoding(timestamp)
         _index_values[head] = timestamp
 
-        base_df.iloc[head, :] = x_buf[head]
-        time_df.iloc[head, 0] = t_buf[head]
-        base_df.index.values[head] = timestamp
-        time_df.index.values[head] = timestamp
-
         head = (head + 1) % ROWS
         return False
 
     elif len(parts)== 3:
         l_n = parts[2]
         idx = n_head[l_n]
+
         n_buf[l_n][idx] = [val[k] for k in cols]
         n_t_buf[l_n][idx] = angle_encoding(timestamp)
-
-        n_base_df[l_n].iloc[idx, :] = n_buf[l_n][idx]
-        n_time_df[l_n].iloc[idx, 0] = n_t_buf[l_n][idx]
+        n_index_ns[l_n][index] = timestamp
 
         n_head[l_n] = (idx + 1) % DATA_N[l_n]
         return l_n
