@@ -140,7 +140,8 @@ try:
 
     print(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(index_ns[(head-1) % ROWS]/1000000000)))}\tFirst batch: {len(batch)}")
 
-    n_order[n_res] = (_n_order[n_res] + n_head[n_res]) % DATA_N[n_res]
+    for k in LARGE_N:
+        n_order[k] = (_n_order[k] + n_head[k]) % DATA_N[k]
 
     while True:
         msg = consumer.poll(timeout=INTERVAL+5)
