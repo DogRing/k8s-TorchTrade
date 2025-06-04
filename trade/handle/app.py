@@ -68,7 +68,7 @@ n_t_buf = { k: np.zeros(v, dtype=np.float32) for k,v in DATA_N.items() }
 n_base_df = {k: pd.DataFrame(n_buf[k],  columns=cols) for k in DATA_N }
 n_time_df = {k: pd.DataFrame(n_t_buf[k], columns=['timestamp']) for k in DATA_N }
 _n_order = {k: np.arange(v) for k,v in DATA_N.items() } 
-n_order = _n_order
+n_order = _n_order.copy()
 n_head = { k: 0 for k in DATA_N }
 head = 0
 _index_values = base_df.index.view("int64")
@@ -158,6 +158,6 @@ try:
                 buf.truncate(0)
                 buf.seek(0)
             else:
-                n_order[n_res] = _n_order[n_res] + n_head[n_res] % DATA_N[n_res]
+                n_order[n_res] = (_n_order[n_res] + n_head[n_res]) % DATA_N[n_res]
 finally:
     consumer.close()
