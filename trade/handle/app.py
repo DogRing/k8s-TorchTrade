@@ -19,8 +19,8 @@ TICK = os.environ.get('TICK','KRW-BTC')
 TOPIC = os.environ.get('TOPIC','krw-btc')
 INTERVAL = int(os.environ.get('INTERVAL','30'))
 DATA = int(os.environ.get('DATA_LENGTH','10000'))
-LARGE_N = ast.literal_eval(os.environ.get('LARGE','[]'))
-DATA_N = ast.literal_eval(os.environ.get('DATA_N_LENGTH','{}'))
+LARGE_N = ast.literal_eval(os.environ.get('LARGE','{}'))
+DATA_N = { k: int(k)*v for k,v in LARGE_N.items() }
 DEBUG = os.environ.get('DEBUG',False)
 
 DATA_CONFIG = os.environ.get('DATA_CONFIG',f'{data_folder}indicator.json')
@@ -30,7 +30,6 @@ print(f"TICK: {TICK}")
 print(f"TOPIC: {TOPIC}")
 print(f"INTERVAL: {INTERVAL}")
 print(f"DATA: {DATA}")
-print(f"LARGE_N: {LARGE_N}")
 print(f"DATA_N: {DATA_N}")
 
 cols = ['open','high','low','close','value']
@@ -71,7 +70,8 @@ n_index_ns = {k: np.zeros(v, dtype=np.int64) for k, v in DATA_N.items()}
 
 n_base_df = {k: pd.DataFrame(n_buf[k],  columns=cols, index=pd.DatetimeIndex(n_index_ns[k])) for k in DATA_N }
 n_time_df = {k: pd.DataFrame(n_t_buf[k], columns=['timestamp'], index=pd.DatetimeIndex(n_index_ns[k])) for k in DATA_N }
-_n_order = {k: np.arange(v) for k,v in DATA_N.items() } 
+
+_n_order = {k: (-1 - int(k) * np.arange(v))[::-1] for k,v in LARGE_N.items() } 
 n_order = _n_order.copy()
 n_head = { k: 0 for k in DATA_N }
 head = 0
@@ -140,6 +140,8 @@ try:
 
     print(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(index_ns[(head-1) % ROWS]/1000000000)))}\tFirst batch: {len(batch)}")
 
+    n_order[n_res] = (_n_order[n_res] + n_head[n_res]) % DATA_N[n_res]
+
     while True:
         msg = consumer.poll(timeout=INTERVAL+5)
         if msg is None:
@@ -163,7 +165,6 @@ try:
                     for tf, df in t_view.items():
                         if df.isnull().values.any():
                             print(f"[DEBUG] NaN 발견: t_view['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
-
 
                 n_x_view = {k: n_base_df[k].take(n_order[k]) for k in DATA_N }
                 n_t_view = {k: n_time_df[k].take(n_order[k]) for k in DATA_N }
