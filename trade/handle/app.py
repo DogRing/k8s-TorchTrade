@@ -121,7 +121,7 @@ def feed_one(m):
 
         n_buf[l_n][idx] = [val[k] for k in cols]
         n_t_buf[l_n][idx] = angle_encoding(timestamp)
-        n_index_ns[l_n][index] = timestamp
+        n_index_ns[l_n][idx] = timestamp
 
         n_head[l_n] = (idx + 1) % DATA_N[l_n]
         return l_n
