@@ -21,6 +21,7 @@ INTERVAL = int(os.environ.get('INTERVAL','30'))
 DATA = int(os.environ.get('DATA_LENGTH','10000'))
 LARGE_N = ast.literal_eval(os.environ.get('LARGE','[]'))
 DATA_N = ast.literal_eval(os.environ.get('DATA_N_LENGTH','{}'))
+DEBUG = os.environ.get('DEBUG',False)
 
 DATA_CONFIG = os.environ.get('DATA_CONFIG',f'{data_folder}indicator.json')
 SCALER_CONFIG = os.environ.get('SCALER_CONFIG',f'{data_folder}scale.json')
@@ -155,30 +156,34 @@ try:
                 x_view = base_df.take(order)
                 with redirect_stdout(buf), redirect_stderr(buf):
                     dfs = data_transform(x_view,tf_config,0)
-                for tf, df in dfs.items():
-                    if df.isnull().values.any():
-                        print(f"[DEBUG] NaN 발견: dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
+                if DEBUG:
+                    for tf, df in dfs.items():
+                        if df.isnull().values.any():
+                            print(f"[DEBUG] NaN 발견: dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
                 
                 t_view = { k:time_df.loc[dfs[k].index] for k in dfs }
-                for tf, df in t_view.items():
-                    if df.isnull().values.any():
-                        print(f"[DEBUG] NaN 발견: t_view['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
+                if DEBUG:
+                    for tf, df in t_view.items():
+                        if df.isnull().values.any():
+                            print(f"[DEBUG] NaN 발견: t_view['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
 
 
                 n_x_view = {k: n_base_df[k].take(n_order[k]) for k in DATA_N }
                 n_t_view = {k: n_time_df[k].take(n_order[k]) for k in DATA_N }
                 with redirect_stdout(buf), redirect_stderr(buf):
                     n_dfs = data_transform(n_x_view,n_config,2)
-                for tf, df in n_dfs.items():
-                    if df.isnull().values.any():
-                        print(f"[DEBUG] NaN 발견: n_dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
+                if DEBUG:
+                    for tf, df in n_dfs.items():
+                        if df.isnull().values.any():
+                            print(f"[DEBUG] NaN 발견: n_dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
 
                 with redirect_stdout(buf), redirect_stderr(buf):
                     dfs = data_scale(dfs|n_dfs,sc_config,save=False,path=f'{data_folder}{sc_config.get("path")}/{TICK}/')
-                for tf, df in dfs.items():
-                    if df.isnull().values.any():
-                        print(f"[DEBUG] NaN 발견: scaled dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
-
+                if DEBUG:
+                    for tf, df in dfs.items():
+                        if df.isnull().values.any():
+                            print(f"[DEBUG] NaN 발견: scaled dfs['{tf}'] 전체에 NaN이 {df.isnull().values.sum()}개 있음")
+                    print(dfs,x_view,n_x_view)
                 print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}\t apply ttrade")
                 ttrade(dfs,t_view|n_t_view)
                 
