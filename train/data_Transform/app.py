@@ -41,7 +41,7 @@ for i,tick in enumerate(tickers):
         os.makedirs(scaler_path, exist_ok=True)
         dfs=data_scale(dfs,scale_config,True,scaler_path)
         print(f"\t scaling file")
-    df=pd.concat(dfs,axis=1)
+    df=pd.concat(dfs.values(),axis=1)
     non_nan_index = df.index.get_loc(df.index[~df.isna().any(axis=1)][0])
     target_file = data_folder+tick+'.csv'
     print(f'Save as {target_file}\t{i+1} / {len(tickers)}\t {len(df)} - {non_nan_index}')
