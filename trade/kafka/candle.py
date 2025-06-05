@@ -20,7 +20,7 @@ kf=KafkaProducer(
 def kf_message(topic,message):
     future=kf.send(topic,value=message)
     try:
-        print(f"{message.timestamp} ohlcv kf_message")
+        print(f"{message['timestamp']} ohlcv kf_message")
         record_metadata = future.get(timeout=5)
     except Exception as e:
         print(f"Failed to send message: {str(e)}")
