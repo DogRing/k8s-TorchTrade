@@ -10,31 +10,35 @@ spec:
     metadata:
       name: cpython
     spec:
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
       restartPolicy: Never
       containers:
       - name: cpython
-        image: dogring/tt-period:0.2
+        image: dogring/tt-period:0.3
         imagePullPolicy: IfNotPresent
         env:
         - name: TARGET
-          value: '5close'
+          value: 'close'
         - name: FUNCTION_NAME
           value: "price_barrier_volat"
         - name: FUNCTION_ARGS
-          value: "[120]"
+          value: "[270]"
         - name: ARG_TYPES
           value: '["int"]'
         - name: VOLATILITY
           value: "True"
         - name: VOLATILITY_PER
-          value: "[0.015,0.02,14]"
+          value: "[0.0125,0.02,14]"
         resources:
           requests:
             cpu: "500m"
-            memory: "1.5Gi"
+            memory: "2Gi"
           limits: 
             cpu: "1"
-            memory: "3Gi"
+            memory: "6Gi"
         volumeMounts:
           - name: smb
             mountPath: "/source/local_values.py"
@@ -42,11 +46,11 @@ spec:
             readOnly: true
           - name: smb
             mountPath: "/data/raw"
-            subPath: "ttrade/data/250424"
+            subPath: "ttrade/250530/data"
             readOnly: true
           - name: smb
             mountPath: "/data/target"
-            subPath: "ttrade/data/250424/target"
+            subPath: "ttrade/250530/data/target"
       volumes:
         - name: smb
           persistentVolumeClaim:

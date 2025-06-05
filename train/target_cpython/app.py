@@ -92,6 +92,10 @@ for tick in tickers:
         y_df = pd.DataFrame({'period':np.ctypeslib.as_array(c_y,shape=(x_len,))})
         print("  Numpy-DataFrame complete")
         y_df.index = df.index
+        counts = y_df['period'].value_counts().reindex([-1, 0, 1], fill_value=0)
+        total   = counts.sum()
+        ratios  = counts / total * 100
+        print(pd.DataFrame({'count': counts, 'ratio_%': ratios.round(2)}), "\n")
         y_df.to_csv(target_folder+tick+'.csv')
         print(f"save CSV: {target_folder+tick+'.csv'}")
     except Exception as e:
