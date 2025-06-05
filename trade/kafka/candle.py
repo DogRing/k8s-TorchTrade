@@ -20,6 +20,7 @@ kf=KafkaProducer(
 def kf_message(topic,message):
     future=kf.send(topic,value=message)
     try:
+        print(f"{message.timestamp} ohlcv kf_message")
         record_metadata = future.get(timeout=5)
     except Exception as e:
         print(f"Failed to send message: {str(e)}")
@@ -29,7 +30,7 @@ def candle_interval():
     q=mp.Queue()
     p=mp.Process(name="Producer",target=update_data,args=(q,tick,),daemon=True)
     p.start()
-    interval_len=int(60/interval)
+    interval_len=60//interval
     while q.empty(): continue 
     price,_,_=q.get()
     interval_data=[[price]*4+[0]]*interval_len
@@ -52,12 +53,14 @@ def candle_interval():
                     interval_data[index][3]=price
             else:
                 interval_data[index]=[interval_data[index-1][3]]*4+[0]
+            
             open=interval_data[(index+1)%interval_len][3]
             close=interval_data[index][3]
             low=min(row[1] for row in interval_data)
             high=max(row[2] for row in interval_data)
             volume=sum(row[4] for row in interval_data)
             kf_message(topic,message={'tick':tick,'timestamp':now_interval,'open':open,'low':low,'high':high,'close':close,'value':volume})
+            
             now_interval+=interval
             left_time=now_interval-time.time()
             if left_time<0: print("interval is too short")
