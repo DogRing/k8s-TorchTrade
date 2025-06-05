@@ -1,6 +1,7 @@
 import websockets
 import asyncio
 import json
+import signal
 import os
 
 TIMEOUT = int(os.getenv("WS_TIMEOUT","240"))
@@ -27,7 +28,7 @@ async def upbit_ws_client(q, ticker):
                 await websocket.send(subscribe_data)
                 while True:
                     try:
-                        data=await asyncio.wait_for(ws.recv(),timeout=TIMEOUT)
+                        data=await asyncio.wait_for(websocket.recv(),timeout=TIMEOUT)
                         data=json.loads(data)
                         data=(data['tp'],data['ttms']/1000.0,data['tv'])
                         q.put(data)
@@ -39,7 +40,8 @@ async def upbit_ws_client(q, ticker):
             print(f"WebSocket error ({retries}/{MAX_RETRIES}): {e}. Retrying in {RETRY_SLEEP}")
             await asyncio.sleep(RETRY_SLEEP)
     print("Max retries exceeded – terminating container")
-    os._exit(1)
+    os.kill(1, signal.SIGTERM)
+    os.kill(1, signal.SIGKILL)
 async def main(q,ticker):
     await upbit_ws_client(q,ticker=ticker)
 
