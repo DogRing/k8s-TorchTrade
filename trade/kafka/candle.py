@@ -13,7 +13,9 @@ kf=KafkaProducer(
     acks=0,
     compression_type='gzip',
     bootstrap_servers=[kafka_host],
-    value_serializer=lambda x: json.dumps(x).encode('utf-8')
+    value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+    batch_size=4096,
+    linger_ms=50
 )
 def kf_message(topic,message):
     future=kf.send(topic,value=message)

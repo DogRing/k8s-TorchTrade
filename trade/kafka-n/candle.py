@@ -15,7 +15,9 @@ kf=Producer({
     'bootstrap.servers': kafka_host,
     'compression.type': 'gzip',
     'acks': '0',
-    'client.id': f'{TOPIC}-{RANGE}'
+    'client.id': f'{TOPIC}-{RANGE}',
+    "batch.size": 4096,
+    "linger.ms": 50
 })
 
 def request_data(tick,to_time='',count=200):
