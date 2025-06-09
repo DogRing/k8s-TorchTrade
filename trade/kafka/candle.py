@@ -14,11 +14,12 @@ kf=KafkaProducer(
     compression_type='gzip',
     bootstrap_servers=[kafka_host],
     value_serializer=lambda x: json.dumps(x).encode('utf-8'),
-    batch_size=4096,
-    linger_ms=50
+    batch_size=0,
+    linger_ms=0
 )
 def kf_message(topic,message):
     future=kf.send(topic,value=message)
+    kf.flush()
     try:
         print(f"{message['timestamp']} ohlcv kf_message")
         record_metadata = future.get(timeout=5)
@@ -64,7 +65,7 @@ def candle_interval():
             now_interval+=interval
             left_time=now_interval-time.time()
             if left_time<0: print("interval is too short")
-            else: time.sleep(left_time-0.0005)
+            else: time.sleep(left_time)
     except Exception as e:
         print(f"Error message: {str(e)}")
     finally:
