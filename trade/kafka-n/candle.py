@@ -16,7 +16,7 @@ kf=Producer({
     'compression.type': 'gzip',
     'acks': '0',
     'client.id': f'{TOPIC}-{RANGE}',
-    "batch.size": 0,
+    "batch.size": 1,
     "linger.ms": 0
 })
 
