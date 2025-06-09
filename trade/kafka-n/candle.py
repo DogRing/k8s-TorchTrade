@@ -16,8 +16,8 @@ kf=Producer({
     'compression.type': 'gzip',
     'acks': '0',
     'client.id': f'{TOPIC}-{RANGE}',
-    "batch.size": 4096,
-    "linger.ms": 50
+    "batch.size": 0,
+    "linger.ms": 0
 })
 
 def request_data(tick,to_time='',count=200):

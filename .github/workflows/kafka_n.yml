@@ -15,7 +15,7 @@ on:
 
 env:
   IMAGE_NAME: dogring/tt-kafka-n
-  IMAGE_TAG: 1.0
+  IMAGE_TAG: 1.1
   WORKSPACE: trade/kafka-n
 
 jobs:
