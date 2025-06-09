@@ -91,6 +91,8 @@ def range_minute():
         'group.id' : f'{TOPIC}-{RANGE}',
         'auto.offset.reset' : 'earliest',
         'enable.auto.commit' : False,
+        "fetch.min.bytes": 1,
+        "fetch.max.wait.ms": 50
     })
     consumer.subscribe([TOPIC])
 
