@@ -24,7 +24,7 @@ zookeeper_host=os.environ.get('ZK_SERVICE','zk-cs.zookeeper.svc:2181')
 retry = KazooRetry(max_tries=-1, delay=0.5, max_delay=5.0)
 zk=KazooClient(
     hosts=zookeeper_host,
-    timeout=10.0.
+    timeout=10.0,
     connection_retry=retry,
     command_retry=retry
 )
