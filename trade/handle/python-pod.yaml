@@ -6,14 +6,15 @@ metadata:
   labels:
     app: trade-btc
 spec:
+  restartPolicy: Never
   tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
     effect: "NoSchedule"
   containers:
   - name: trade-bit
-    image: dogring/tt-trade:1.1
-    imagePullPolicy: IfNotPresent
+    image: dogring/tt-trade:1.2
+    imagePullPolicy: Always
     resources:
       requests:
         memory: "32Mi"
@@ -30,9 +31,9 @@ spec:
     - name: DATA
       value: "10000"
     - name: LARGE
-      value: "[240]"
-    - name: DATA_N_LENGTH
       value: "{'240': 250}"
+    # - name: DEBUG
+    #   value: "True"
     - name: ACCESS_KEY
       valueFrom:
         secretKeyRef:
@@ -46,7 +47,7 @@ spec:
     volumeMounts:
     - name: smb
       mountPath: "/data/data"
-      subPath: "ttrade/250530/data"
+      subPath: "ttrade/250604/data"
       readOnly: true
     - name: smb
       mountPath: "/source/local_values.py"

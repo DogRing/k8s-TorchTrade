@@ -41,9 +41,9 @@ def ttrade(dfs,time_df):
 
     print(f"{result}")
 
-    if result == 0 and position == 0: 
-        print(upbit.buy_market_order(ticker, upbit.get_balance("KRW")*0.985))
-        position = 1
-    elif result == 2 and position == 1:
+    if result == 0 and position == 1: 
         print(upbit.sell_market_order(ticker, upbit.get_balance(ticker)*0.985))
         position = 0
+    elif result == 2 and position == 0:
+        print(upbit.buy_market_order(ticker, upbit.get_balance("KRW")*0.985))
+        position = 1
