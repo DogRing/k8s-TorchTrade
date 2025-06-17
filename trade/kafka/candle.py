@@ -9,22 +9,18 @@ tick=os.environ['TICK']
 topic=os.environ['TOPIC']
 interval=int(os.environ.get('INTERVAL','15'))
 kafka_host=os.environ.get('KAFKA_SERVICE','my-cluster-kafka-bootstrap.kafka.svc:9092')
+
 kf=KafkaProducer(
-    acks=0,
-    compression_type='gzip',
     bootstrap_servers=[kafka_host],
     value_serializer=lambda x: json.dumps(x).encode('utf-8'),
-    batch_size=0,
-    linger_ms=0
+    acks=1,
+    linger_ms=0,
+    compression_type='gzip'
 )
 def kf_message(topic,message):
     future=kf.send(topic,value=message)
-    kf.flush()
-    try:
-        print(f"{message['timestamp']} ohlcv kf_message")
-        record_metadata = future.get(timeout=5)
-    except Exception as e:
-        print(f"Failed to send message: {str(e)}")
+    record_md = future.get(timeout=5)
+    print(f"[SEND] {time.time()} | {message['timestamp']} partition={record_md.partition} offset={record_md.offset}")
 
 def candle_interval():
     print('Working pod')
@@ -41,8 +37,6 @@ def candle_interval():
     now_interval=now-now%interval+interval
     try:
         while True:
-            while time.time()<now_interval: pass
-            
             index=int(now_interval%60/interval)
             if not q.empty():
                 price,ttms,volume=q.get()
@@ -69,4 +63,5 @@ def candle_interval():
     except Exception as e:
         print(f"Error message: {str(e)}")
     finally:
+        kf.flush()
         kf.close()
