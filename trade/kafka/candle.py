@@ -61,7 +61,7 @@ def candle_interval():
             ts = last['timestamp'] + interval
             price = last['close']
             while ts < now_interval:
-                kf_message(topic,message={'tick':tick,'timestamp':ts,'open':price,'low':price,'high':price,'close':close,'value':0})
+                kf_message(topic,message={'tick':tick,'timestamp':ts,'open':price,'low':price,'high':price,'close':price,'value':0})
                 ts += interval
         time.sleep(now_interval-time.time())
         while True:
