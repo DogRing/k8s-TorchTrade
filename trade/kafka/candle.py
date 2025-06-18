@@ -56,7 +56,7 @@ def candle_interval():
     print(f'Start at {start.tm_year}-{start.tm_mon}-{start.tm_mday} {start.tm_hour+9}:{start.tm_min}:{start.tm_sec} KST')
     now_interval=now-now%interval+interval
     try:
-        last = last_candle(topic)
+        last = get_last_kf(topic)
         if last:
             ts = last['timestamp'] + interval
             price = last['close']
