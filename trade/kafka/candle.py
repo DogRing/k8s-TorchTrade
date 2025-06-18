@@ -1,4 +1,4 @@
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaConsumer, TopicPartition
 import multiprocessing as mp
 from bitsocket import update_data
 import json
@@ -17,6 +17,26 @@ kf=KafkaProducer(
     linger_ms=0,
     compression_type='gzip'
 )
+
+def get_last_kf(topic):
+    cons = KafkaConsumer(
+        bootstrap_servers=[kafka_host],
+        value_deserializer=lambda x: json.loads(x.decode()),
+        auto_offset_reset="latest",
+        enable_auto_commit=False
+    )
+    tp = TopicPartition(topic,0)
+    cons.assign([tp])
+    cons.seek_to_end(tp)
+    end = cons.end_offsets([tp])[tp]
+    if end == 0:
+        print(f"No message in topic {topic}")
+        return None
+    cons.seek(tp,end - 1)
+    msg = next(cons)
+    cons.close()
+    return msg.value
+
 def kf_message(topic,message):
     future=kf.send(topic,value=message)
     record_md = future.get(timeout=5)
@@ -36,6 +56,14 @@ def candle_interval():
     print(f'Start at {start.tm_year}-{start.tm_mon}-{start.tm_mday} {start.tm_hour+9}:{start.tm_min}:{start.tm_sec} KST')
     now_interval=now-now%interval+interval
     try:
+        last = last_candle(topic)
+        if last:
+            ts = last['timestamp'] + interval
+            price = last['close']
+            while ts < now_interval:
+                kf_message(topic,message={'tick':tick,'timestamp':ts,'open':price,'low':price,'high':price,'close':close,'value':0})
+                ts += interval
+        time.sleep(now_interval-time.time())
         while True:
             index=int(now_interval%60/interval)
             if not q.empty():
