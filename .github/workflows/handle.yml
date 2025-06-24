@@ -15,7 +15,7 @@ on:
 
 env:
   IMAGE_NAME: dogring/tt-trade
-  IMAGE_TAG: 1.2
+  IMAGE_TAG: 1.21
   WORKSPACE: trade/handle
 
 jobs:

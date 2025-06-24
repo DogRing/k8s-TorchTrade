@@ -13,7 +13,7 @@ spec:
     effect: "NoSchedule"
   containers:
   - name: trade-bit
-    image: dogring/tt-trade:1.2
+    image: dogring/tt-trade:1.21
     imagePullPolicy: Always
     resources:
       requests:
@@ -28,8 +28,8 @@ spec:
       value: KRW-BTC
     - name: INTERVAL
       value: "30"
-    - name: DATA
-      value: "10000"
+    - name: DATA_LENGTH
+      value: "6660"
     - name: LARGE
       value: "{'240': 250}"
     # - name: DEBUG
